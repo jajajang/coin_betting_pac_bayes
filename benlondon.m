@@ -1,4 +1,7 @@
 function [ucblist, lcblist]=benlondon(x,p_posterior,p_prior, cases, delta)
+
+
+
 KL_term = get_KL(p_posterior,p_prior, cases);
 [repetition, T]=size(x);
 conf_term = log(T/delta);
@@ -13,17 +16,10 @@ switch cases
 end
 
 
-%emp_term = sum(p_posterior*mean(x,2));
-
 width1=2*(KL_term+conf_term)/(T-1);
 
 func= @(tau) sqrt(width1*(emp_term-1+(1/tau))/tau) + width1/tau;
 
-
-%{
-options = optimoptions('fmincon','Algorithm','interior-point','Display','iter');
-[tau_true, width]=fmincon(func,0.5,[],[],[],[],1-emp_term,1,[],options);
-%}
 monte_carlo_term=sqrt(log(1/delta)/repetition);
 width=func(1)+is_monte_carlo*monte_carlo_term;
 ucblist=min(emp_term+width,1);

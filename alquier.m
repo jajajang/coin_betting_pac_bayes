@@ -1,25 +1,20 @@
 function [ucblist, lcblist]=alquier(x,p_posterior,p_prior, cases, delta)
+
+%Maurer's bound without monte-carlo sampling
+%This code will be mainly used for Figure 1 and 2. 
+
 [repetition, T]=size(x);
 
 
 KL_term = get_KL(p_posterior,p_prior, cases);
 conf_term = log(2*sqrt(T)/delta);
 
-is_monte_carlo=0;
+% Function for the inequality constraint
 
-%emp_term = sum(p_posterior*mean(x,2));
-switch cases
-    case 'gaussian'
-        emp_term=mean(x,'all');
-        is_monte_carlo=1;
-    otherwise
-        emp_term = dot(p_posterior,mean(x,2));
-end
+g = @(mu_) get_KL([1-emp_term, emp_term],[1-mu_,mu_],'bernoulli')-(KL_term+conf_term)/T;
 
-f= @(mu_) get_KL([1-emp_term, emp_term],[1-mu_,mu_],'bernoulli');
-g = @(mu_) get_KL([1-emp_term, emp_term],[1-mu_,mu_],'bernoulli')-(KL_term+conf_term)/T - is_monte_carlo*sqrt(log(1/delta)/repetition);
-
-%binary search
+% Use binary search to find out upper and lower bound that satisfy the
+% inequality constraint
 
 mu_max=1-eps;
 mu_min=eps;
