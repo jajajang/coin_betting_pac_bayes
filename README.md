@@ -1,4 +1,4 @@
-# Official code for 'Tighter PAC-Bayes Bounds through Coin-Betting'
+# Tighter PAC-Bayes Bounds through Coin-Betting
 This is the code for the paper 'Tighter PAC-Bayes Bounds through Coin-Betting' published in COLT 2023.
 (link: https://arxiv.org/abs/2302.05829)
 
